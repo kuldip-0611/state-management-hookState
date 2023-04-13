@@ -4,7 +4,7 @@ import { counterState } from './hookState';
 import { useHookstate } from '@hookstate/core';
 import { useState } from 'react';
 import { ListGroup, ListGroupItem } from 'reactstrap';
-import { computeHeadingLevel } from '@testing-library/react';
+
 
 
 function App() {
@@ -21,6 +21,7 @@ function App() {
 
   const handleExpence = () => {
     if (expence !== null && expenceValue >= 1) {
+      counter.expense.set((expenceArray)=>parseInt(expenceArray)+parseInt(expenceValue))
       
       counter.expense_description.set((old) => { 
         const oldArr = [...old]
@@ -28,7 +29,8 @@ function App() {
           expence,
           expenceValue
         })
-
+        setExpence('');
+        setExpenceValue('')
 
         return oldArr
       })
@@ -37,13 +39,17 @@ function App() {
 
   }
   const handleIncome = () => {
+
     if (income !== null && money >= 1) {
+      counter.income.set((expenceArray)=>parseInt(expenceArray)+parseInt(money))
       counter.income_decription.set((incomes) => {
         const oldArray = [...incomes]
         oldArray.push({
           income,
           money
         })
+        setIncome('')
+        setMoney('')
         return oldArray
       })
     }
@@ -53,7 +59,7 @@ function App() {
   return (
     <div className="App">
       <div className='container'>
-        <h1>Total Money {counter.get().total_Money} </h1>
+        <h1>Total Money {counter.get().income - counter.get().expense} </h1>
         <div className='row'>
           <div className='col'>
             <h3>Add Expence {counter.get().expense} </h3>
