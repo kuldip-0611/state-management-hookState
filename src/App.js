@@ -1,23 +1,109 @@
 import { Button } from 'reactstrap';
 import './App.css';
-import {counterState} from './hookState';
+import { counterState } from './hookState';
 import { useHookstate } from '@hookstate/core';
+import { useState } from 'react';
+import { ListGroup, ListGroupItem } from 'reactstrap';
+import { computeHeadingLevel } from '@testing-library/react';
 
 
 function App() {
- 
-    const counter = useHookstate(counterState);
-  
+  const [expence, setExpence] = useState('');
+  const [expenceValue, setExpenceValue] = useState(0);
+
+  const [income, setIncome] = useState('');
+  const [money, setMoney] = useState(0);
+
+
+
+  const counter = useHookstate(counterState);
+
+
+  const handleExpence = () => {
+    if (expence !== null && expenceValue >= 1) {
+      
+      counter.expense_description.set((old) => { 
+        const oldArr = [...old]
+        oldArr.push({
+          expence,
+          expenceValue
+        })
+
+
+        return oldArr
+      })
+
+    }
+
+  }
+  const handleIncome = () => {
+    if (income !== null && money >= 1) {
+      counter.income_decription.set((incomes) => {
+        const oldArray = [...incomes]
+        oldArray.push({
+          income,
+          money
+        })
+        return oldArray
+      })
+    }
+
+  }
+
   return (
     <div className="App">
-          <div className='container bg-dark text-light p-3 w-25'>
-            {counter.get()}
+      <div className='container'>
+        <h1>Total Money {counter.get().total_Money} </h1>
+        <div className='row'>
+          <div className='col'>
+            <h3>Add Expence {counter.get().expense} </h3>
+            <input type='text' value={expence} onChange={(e) => setExpence(e.target.value)} className='m-2' />
+            <input type='number' value={expenceValue} onChange={(e) => parseInt(setExpenceValue(e.target.value))} className='m-2' /> <br />
+            <Button onClick={handleExpence}>Expense</Button>
+            {
+
+              counter.get().expense_description.map((item,index) => (
+                <ListGroup key={index}>
+                  <ListGroupItem className='d-flex justify-content-around'>
+                    <span>{item.expence}
+                    </span>
+                    <span>{item.expenceValue}
+                    </span>
+
+                  </ListGroupItem>
+
+                </ListGroup>
+              ))
+
+
+            }
+
           </div>
-          <div className='buttons '>
-          <Button className='m-3' onClick={()=>counter.set(p=>p+1)}>Increment</Button>
-          <Button className='ms-3' onClick={()=>counter.set(p=>p-1)}>Decrement</Button>
-          <Button className='ms-3' onClick={()=>counter.set(0)}>Reset</Button>
+          <div className='col'>
+            <h3>Add Money {counter.get().income}</h3>
+            <input type='text' value={income} onChange={(e) => setIncome(e.target.value)} className='m-2' />
+            <input type='number' value={money} onChange={(e) => parseInt(setMoney(e.target.value))} className='m-2' /> <br />
+            <Button onClick={handleIncome}>Add</Button>
+            {
+
+              counter.get().income_decription.map((item,index) => (
+                <ListGroup key={index}>
+                  <ListGroupItem className='d-flex justify-content-around'>
+                    <span>{item.income}
+                    </span>
+                    <span>{item.money}
+                    </span>
+
+                  </ListGroupItem>
+
+                </ListGroup>
+              ))
+
+
+            }
           </div>
+        </div>
+      </div>
     </div>
   );
 }
